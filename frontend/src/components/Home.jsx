@@ -1,14 +1,14 @@
 import React, { useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
   const [name, setName] = useState("");
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const startQuiz = () => {
     if (name) {
       localStorage.setItem("userName", name);
-      history.push("/quiz");
+      navigate("/quiz");
     }
   };
 

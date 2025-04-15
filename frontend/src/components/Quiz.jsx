@@ -22,17 +22,24 @@ const Quiz = () => {
   };
 
   if (currentQuestion >= questions.length) {
+    localStorage.setItem("userScore", score);
     return (
       <div>
         Você acertou {score} de {questions.length} perguntas!
+        <button onClick={() => window.location.reload()}>Repetir Quiz</button>
       </div>
     );
   }
 
+  // Embaralhar as opções
+  const shuffledOptions = [...questions[currentQuestion].options].sort(
+    () => Math.random() - 0.5
+  );
+
   return (
     <div>
       <h2>{questions[currentQuestion].question}</h2>
-      {questions[currentQuestion].options.map((option, index) => (
+      {shuffledOptions.map((option, index) => (
         <button key={index} onClick={() => handleAnswer(option)}>
           {option}
         </button>

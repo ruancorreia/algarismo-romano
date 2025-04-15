@@ -6,6 +6,10 @@ body {
   margin: 0;
   padding: 0;
   background-color: #f4f4f4;
+  display: flex; /* Usar flexbox para centralizar */
+  justify-content: center; /* Centraliza horizontalmente */
+  align-items: center; /* Centraliza verticalmente */
+  height: 100vh; /* Ocupa toda a altura da tela */
 }
 
 /* Estilo para o título principal */
@@ -22,6 +26,7 @@ button {
   padding: 10px 20px;
   border-radius: 5px;
   cursor: pointer;
+  margin: 10px; /* Adiciona margem para espaçamento */
 }
 
 button:hover {
