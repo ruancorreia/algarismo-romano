@@ -15,6 +15,7 @@ const Home = () => {
   return (
     <div>
       <h1>Quiz de Números Romanos</h1>
+      <t>Quiz criado para Lara estudar sobre números romanos</t>
       <input
         type="text"
         placeholder="Digite seu nome"

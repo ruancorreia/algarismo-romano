@@ -5,6 +5,7 @@ const Quiz = () => {
   const [questions, setQuestions] = useState([]);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [score, setScore] = useState(0);
+  const [userName, setUserName] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -16,6 +17,13 @@ const Quiz = () => {
     fetchQuestions();
   }, []);
 
+  useEffect(() => {
+    const name = localStorage.getItem("userName");
+    if (name) {
+      setUserName(name);
+    }
+  }, []);
+
   const handleAnswer = (answer) => {
     if (answer === questions[currentQuestion].answer) {
       setScore(score + 1);
@@ -24,8 +32,6 @@ const Quiz = () => {
   };
 
   const handleEndQuiz = () => {
-    const userName = localStorage.getItem("userName");
-
     const saveScore = async () => {
       const existingScoresResponse = await fetch(
         "http://localhost:5000/api/scores"
@@ -58,21 +64,22 @@ const Quiz = () => {
     };
 
     saveScore().then(() => {
-      navigate("/ranking"); // Redirecionar para a página de ranking
+      navigate("/ranking");
     });
   };
 
-  // Verifica se todas as perguntas foram respondidas
   if (currentQuestion >= questions.length) {
     return (
       <div>
-        Você acertou {score} de {questions.length} perguntas!
+        <h2>Parabéns, {userName}!</h2>
+        <p>
+          Você acertou {score} de {questions.length} perguntas!
+        </p>
         <button onClick={handleEndQuiz}>Encerrar Quiz</button>
       </div>
     );
   }
 
-  // Embaralhar as opções
   const shuffledOptions = [...questions[currentQuestion].options].sort(
     () => Math.random() - 0.5
   );

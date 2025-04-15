@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Ranking = () => {
   const [scores, setScores] = useState([]);
+  const navigate = useNavigate();
 
   const fetchScores = async () => {
     const response = await fetch("http://localhost:5000/api/scores");
@@ -26,6 +28,7 @@ const Ranking = () => {
           </li>
         ))}
       </ul>
+      <button onClick={() => navigate("/")}>Repetir Teste</button>
     </div>
   );
 };
