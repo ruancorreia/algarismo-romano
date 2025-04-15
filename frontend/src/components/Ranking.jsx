@@ -1,15 +1,31 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 const Ranking = () => {
-  const userName = localStorage.getItem("userName");
-  const score = localStorage.getItem("userScore"); // Supondo que você armazene a pontuação
+  const [scores, setScores] = useState([]);
+
+  const fetchScores = async () => {
+    const response = await fetch("http://localhost:5000/api/scores");
+    const data = await response.json();
+
+    // Ordenar os scores em ordem decrescente
+    const sortedScores = data.sort((a, b) => b.score - a.score);
+    setScores(sortedScores);
+  };
+
+  useEffect(() => {
+    fetchScores();
+  }, []);
 
   return (
     <div>
       <h1>Ranking</h1>
-      <p>Nome: {userName}</p>
-      <p>Pontuação: {score}</p>
-      <button onClick={() => window.location.reload()}>Repetir Quiz</button>
+      <ul>
+        {scores.map((score) => (
+          <li key={score._id}>
+            Nome: {score.userName} - Pontuação: {score.score}
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };

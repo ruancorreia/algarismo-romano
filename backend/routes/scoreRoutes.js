@@ -15,4 +15,19 @@ router.post("/", async (req, res) => {
   res.status(201).json(newScore);
 });
 
+// Rota para remover pontuação
+router.delete("/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await Score.findByIdAndDelete(id);
+    if (!result) {
+      return res.status(404).send({ message: "Pontuação não encontrada" });
+    }
+    res.status(200).send({ message: "Pontuação removida com sucesso" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ message: "Erro ao remover pontuação" });
+  }
+});
+
 module.exports = router;

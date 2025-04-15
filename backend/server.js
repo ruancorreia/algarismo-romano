@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const questionRoutes = require("./routes/questionRoutes");
 const scoreRoutes = require("./routes/scoreRoutes");
+const Score = require("./models/Score"); // Certifique-se de que o caminho está correto
 
 const app = express();
 app.use(cors());
@@ -26,4 +27,22 @@ app.get("/", (req, res) => {
 app.use("/api/questions", questionRoutes);
 app.use("/api/scores", scoreRoutes);
 
-app.listen(5000, () => console.log("Server running on port 5000"));
+// Rota para remover pontuação
+app.delete("/api/scores/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await Score.findByIdAndDelete(id); // Supondo que você esteja usando Mongoose
+    if (!result) {
+      return res.status(404).send({ message: "Pontuação não encontrada" });
+    }
+    res.status(200).send({ message: "Pontuação removida com sucesso" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ message: "Erro ao remover pontuação" });
+  }
+});
+
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+  console.log(`Servidor rodando na porta ${PORT}`);
+});

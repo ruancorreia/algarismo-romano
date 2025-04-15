@@ -48,6 +48,24 @@ const Admin = () => {
     fetchQuestions(); // Atualiza a lista de perguntas
   };
 
+  // Função para remover pontuação do ranking
+  const removeScore = async (id) => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/scores/${id}`, {
+        method: "DELETE",
+      });
+      const responseData = await response.text(); // Captura a resposta como texto
+      console.log(responseData); // Log da resposta
+      if (!response.ok) {
+        throw new Error("Erro ao remover pontuação");
+      }
+      fetchScores(); // Atualiza a lista de scores
+    } catch (error) {
+      console.error(error);
+      alert(`Não foi possível remover a pontuação: ${error.message}`);
+    }
+  };
+
   return (
     <div
       style={{
@@ -120,6 +138,14 @@ const Admin = () => {
           {scores.map((score) => (
             <li key={score._id}>
               Nome: {score.userName} - Pontuação: {score.score}
+              <button
+                onClick={() => {
+                  console.log(`Removendo score com ID: ${score._id}`);
+                  removeScore(score._id);
+                }}
+              >
+                Remover
+              </button>
             </li>
           ))}
         </ul>
