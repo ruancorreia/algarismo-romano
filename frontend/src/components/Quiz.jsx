@@ -1,67 +1,44 @@
-import { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import { getQuestions, submitScore } from "../api";
+import React, { useEffect, useState } from "react";
 
-export default function Quiz() {
+const Quiz = () => {
+  const [questions, setQuestions] = useState([]);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [score, setScore] = useState(0);
-  const [questions, setQuestions] = useState([]);
-  const [selected, setSelected] = useState(null);
-  const location = useLocation();
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchQuestions = async () => {
-      const res = await getQuestions();
-      setQuestions(res.data);
+      const response = await fetch("http://localhost:5000/api/questions");
+      const data = await response.json();
+      setQuestions(data);
     };
     fetchQuestions();
   }, []);
 
-  const handleAnswer = (option) => {
-    if (option === questions[currentQuestion].correctAnswer) {
+  const handleAnswer = (answer) => {
+    if (answer === questions[currentQuestion].answer) {
       setScore(score + 1);
     }
-    setSelected(option);
-    setTimeout(() => {
-      setCurrentQuestion(currentQuestion + 1);
-      setSelected(null);
-    }, 1000);
+    setCurrentQuestion(currentQuestion + 1);
   };
 
-  useEffect(() => {
-    if (currentQuestion === questions.length && questions.length > 0) {
-      submitScore({ name: location.state.name, score });
-      navigate("/ranking");
-    }
-  }, [currentQuestion, questions]);
-
-  if (!questions.length) return <div>Carregando...</div>;
+  if (currentQuestion >= questions.length) {
+    return (
+      <div>
+        Você acertou {score} de {questions.length} perguntas!
+      </div>
+    );
+  }
 
   return (
-    <div className="quiz-container">
-      <h2>
-        Questão {currentQuestion + 1}/{questions.length}
-      </h2>
-      <p>{questions[currentQuestion].question}</p>
-      <div className="options">
-        {questions[currentQuestion].options.map((option, i) => (
-          <button
-            key={i}
-            onClick={() => handleAnswer(option)}
-            className={
-              selected === option
-                ? option === questions[currentQuestion].correctAnswer
-                  ? "correct"
-                  : "wrong"
-                : ""
-            }
-            disabled={selected !== null}
-          >
-            {option}
-          </button>
-        ))}
-      </div>
+    <div>
+      <h2>{questions[currentQuestion].question}</h2>
+      {questions[currentQuestion].options.map((option, index) => (
+        <button key={index} onClick={() => handleAnswer(option)}>
+          {option}
+        </button>
+      ))}
     </div>
   );
-}
+};
+
+export default Quiz;

@@ -1,24 +1,29 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import { useHistory } from "react-router-dom";
 
-export default function Home() {
+const Home = () => {
   const [name, setName] = useState("");
-  const navigate = useNavigate();
+  const history = useHistory();
 
-  const handleStart = () => {
-    navigate("/quiz", { state: { name } });
+  const startQuiz = () => {
+    if (name) {
+      localStorage.setItem("userName", name);
+      history.push("/quiz");
+    }
   };
 
   return (
-    <div className="home-container">
-      <h1>Quiz de Algarismos Romanos</h1>
+    <div>
+      <h1>Quiz de Números Romanos</h1>
       <input
         type="text"
-        placeholder="Seu nome"
+        placeholder="Digite seu nome"
         value={name}
         onChange={(e) => setName(e.target.value)}
       />
-      <button onClick={handleStart}>Iniciar Quiz</button>
+      <button onClick={startQuiz}>Iniciar Quiz</button>
     </div>
   );
-}
+};
+
+export default Home;
