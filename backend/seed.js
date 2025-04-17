@@ -2,79 +2,103 @@ require("dotenv").config();
 const mongoose = require("mongoose");
 const Question = require("./models/Question"); // Certifique-se de que o caminho está correto
 
-// Conectar ao MongoDB
-mongoose
-  .connect(process.env.MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(() => {
-    console.log("Conectado ao MongoDB");
-    return Question.deleteMany({}); // Limpa a coleção antes de adicionar novas perguntas
-  })
-  .then(() => {
-    // Perguntas a serem inseridas
-    const questions = [
-      {
-        question: "Qual é o número romano para 1?",
-        options: ["I", "II", "III", "IV"],
-        answer: "I",
-      },
-      {
-        question: "Qual é o número romano para 5?",
-        options: ["V", "X", "L", "C"],
-        answer: "V",
-      },
-      {
-        question: "Qual é o número romano para 10?",
-        options: ["X", "V", "I", "L"],
-        answer: "X",
-      },
-      {
-        question: "Qual é o número romano para 50?",
-        options: ["L", "C", "D", "M"],
-        answer: "L",
-      },
-      {
-        question: "Qual é o número romano para 100?",
-        options: ["C", "D", "M", "X"],
-        answer: "C",
-      },
-      {
-        question: "Qual é o número romano para 500?",
-        options: ["D", "C", "M", "L"],
-        answer: "D",
-      },
-      {
-        question: "Qual é o número romano para 1000?",
-        options: ["M", "D", "C", "L"],
-        answer: "M",
-      },
-      {
-        question: "Qual é o número romano para 4?",
-        options: ["IV", "III", "II", "I"],
-        answer: "IV",
-      },
-      {
-        question: "Qual é o número romano para 9?",
-        options: ["IX", "VIII", "VII", "X"],
-        answer: "IX",
-      },
-      {
-        question: "Qual é o número romano para 40?",
-        options: ["XL", "L", "XXX", "X"],
-        answer: "XL",
-      },
-    ];
+const questions = [
+  {
+    question: "Qual é o número romano para 1?",
+    options: ["I", "V", "X", "L"],
+    answer: "I",
+  },
+  {
+    question: "Qual é o número romano para 5?",
+    options: ["I", "V", "X", "L"],
+    answer: "V",
+  },
+  {
+    question: "Qual é o número romano para 10?",
+    options: ["I", "V", "X", "L"],
+    answer: "X",
+  },
+  {
+    question: "Qual é o número romano para 50?",
+    options: ["L", "C", "D", "M"],
+    answer: "L",
+  },
+  {
+    question: "Qual é o número romano para 100?",
+    options: ["L", "C", "D", "M"],
+    answer: "C",
+  },
+  {
+    question: "Qual é o número romano para 500?",
+    options: ["L", "C", "D", "M"],
+    answer: "D",
+  },
+  {
+    question: "Qual é o número romano para 1000?",
+    options: ["L", "C", "D", "M"],
+    answer: "M",
+  },
+  {
+    question: "Como se escreve 4 em algarismos romanos?",
+    options: ["IIII", "IV", "VI", "IX"],
+    answer: "IV",
+  },
+  {
+    question: "Como se escreve 9 em algarismos romanos?",
+    options: ["VIIII", "IX", "XI", "XIV"],
+    answer: "IX",
+  },
+  {
+    question: "Como se escreve 40 em algarismos romanos?",
+    options: ["XXXX", "XL", "LX", "XC"],
+    answer: "XL",
+  },
+];
 
-    // Inserir as perguntas no banco de dados
-    return Question.insertMany(questions);
-  })
-  .then(() => {
-    console.log("Perguntas inseridas com sucesso!");
-    mongoose.connection.close(); // Fecha a conexão com o banco de dados
-  })
-  .catch((err) => {
-    console.error("Erro ao inserir perguntas:", err);
-    mongoose.connection.close(); // Fecha a conexão em caso de erro
-  });
+const seedDatabase = async () => {
+  try {
+    console.log("Iniciando script de seed...");
+    console.log("MONGO_URI:", process.env.MONGO_URI);
+
+    // Opções de conexão
+    const mongooseOptions = {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      serverSelectionTimeoutMS: 30000,
+      socketTimeoutMS: 45000,
+      connectTimeoutMS: 30000,
+      family: 4,
+      keepAlive: true,
+      keepAliveInitialDelay: 300000,
+    };
+
+    console.log("Tentando conectar ao MongoDB...");
+
+    // Conectar ao MongoDB
+    await mongoose.connect(process.env.MONGO_URI, mongooseOptions);
+    console.log("Conectado ao MongoDB com sucesso!");
+
+    // Limpar a coleção existente
+    console.log("Limpando coleção existente...");
+    await Question.deleteMany({});
+    console.log("Coleção limpa com sucesso!");
+
+    // Inserir as perguntas
+    console.log("Preparando para inserir perguntas...");
+    await Question.insertMany(questions);
+    console.log(`${questions.length} perguntas inseridas com sucesso!`);
+
+    // Não fechar a conexão aqui
+    console.log("Seed concluído com sucesso!");
+  } catch (error) {
+    console.error("Erro durante o seed:", {
+      message: error.message,
+      stack: error.stack,
+      name: error.name,
+    });
+    process.exit(1);
+  }
+};
+
+// Executar o seed
+seedDatabase();

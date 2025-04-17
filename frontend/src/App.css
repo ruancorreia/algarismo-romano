@@ -16,32 +16,45 @@ body {
 h1 {
   text-align: center;
   color: #333;
+  margin-bottom: 2rem;
 }
 
 /* Estilo para botões */
 button {
-  background-color: #007bff;
+  background-color: #4caf50;
   color: white;
-  border: none;
   padding: 10px 20px;
-  border-radius: 5px;
+  border: none;
+  border-radius: 4px;
   cursor: pointer;
-  margin: 10px; /* Adiciona margem para espaçamento */
+  font-size: 16px;
+  margin: 10px;
 }
 
 button:hover {
-  background-color: #0056b3;
+  background-color: #45a049;
 }
 
 /* Estilo para inputs */
-input[type="text"] {
+input {
   padding: 10px;
-  margin: 10px 0;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  width: 100%;
-  max-width: 400px;
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
+  margin: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.correct {
+  color: green;
+}
+
+.incorrect {
+  color: red;
+}
+
+.App {
+  text-align: center;
+  padding: 2rem;
+  max-width: 800px;
+  margin: 0 auto;
 }
