@@ -7,7 +7,13 @@ const scoreRoutes = require("./routes/scoreRoutes");
 const Score = require("./models/Score"); // Certifique-se de que o caminho está correto
 
 const app = express();
-app.use(cors());
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL || "http://localhost:3000",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  })
+);
 app.use(express.json());
 
 mongoose
@@ -43,6 +49,4 @@ app.delete("/api/scores/:id", async (req, res) => {
 });
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Servidor rodando na porta ${PORT}`);
-});
+module.exports = app;
